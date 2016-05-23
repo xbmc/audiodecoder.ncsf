@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="audiodecoder.ncsf"
-  version="1.0.1"
+  version="1.1.0"
   name="NCSF Audio Decoder"
   provider-name="spiff">
   <requires>
@@ -12,10 +12,10 @@
     name="ncsf"
     extension=".minincsf"
     tags="true"
-    library_linux="audiodecoder.ncsf.so"/>
+    library_@PLATFORM@="@LIBRARY_FILENAME@"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">NCSF Audio Decoder</summary>
     <description lang="en">NCSF Audio Decoder</description>
-    <platform>all</platform>
+    <platform>@PLATFORM@</platform>
   </extension>
 </addon>
