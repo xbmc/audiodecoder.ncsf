@@ -20,6 +20,8 @@ add_subdirectory(lib/SSEQPlayer)
 set(NCSF_SOURCES src/NCSFCodec.cpp
                  src/RingBuffer.cpp)
 
+set(NCSF_HEADERS src/RingBuffer.h)
+
 set(DEPLIBS ${p8-platform_LIBRARIES} psflib SSEQPlayer)
 
 build_addon(audiodecoder.ncsf NCSF DEPLIBS)
