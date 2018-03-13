@@ -8,6 +8,7 @@ enable_language(CXX)
 
 find_package(Kodi REQUIRED)
 find_package(p8-platform REQUIRED)
+find_package(ZLIB REQUIRED)
 
 include_directories(${KODI_INCLUDE_DIR}/..
                     ${p8-platform_INCLUDE_DIRS}
@@ -22,10 +23,12 @@ set(NCSF_SOURCES src/NCSFCodec.cpp
 
 set(NCSF_HEADERS src/RingBuffer.h)
 
-set(DEPLIBS ${p8-platform_LIBRARIES} psflib SSEQPlayer)
+set(DEPLIBS ${p8-platform_LIBRARIES} psflib SSEQPlayer ${ZLIB_LIBRARIES})
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED 1)
 
 build_addon(audiodecoder.ncsf NCSF DEPLIBS)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 if(CORE_SYSTEM_NAME MATCHES windows)
   target_compile_definitions(audiodecoder.ncsf PRIVATE -Dstrcasecmp=_stricmp)
