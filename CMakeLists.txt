@@ -27,4 +27,8 @@ set(DEPLIBS ${p8-platform_LIBRARIES} psflib SSEQPlayer)
 build_addon(audiodecoder.ncsf NCSF DEPLIBS)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+if(CORE_SYSTEM_NAME MATCHES windows)
+  target_compile_definitions(audiodecoder.ncsf PRIVATE -Dstrcasecmp=_stricmp)
+endif()
+
 include(CPack)

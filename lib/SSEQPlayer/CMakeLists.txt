@@ -19,7 +19,10 @@ set(SOURCES Channel.cpp
 	    Track.cpp)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
 add_definitions(-D_LIBCPP_VERSION)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE 1)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED 1)
 
 add_library(SSEQPlayer STATIC ${SOURCES})
