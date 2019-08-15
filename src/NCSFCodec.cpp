@@ -262,8 +262,7 @@ static bool Load(NCSFContext* r)
   return true;
 }
 
-class CNCSFCodec : public kodi::addon::CInstanceAudioDecoder,
-                   public kodi::addon::CAddonBase
+class ATTRIBUTE_HIDDEN CNCSFCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
   CNCSFCodec(KODI_HANDLE instance) :
