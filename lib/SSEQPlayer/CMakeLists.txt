@@ -1,8 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
 project(SSEQPlayer)
-
-enable_language(CXX)
-
-cmake_minimum_required(VERSION 2.6)
 
 set(SOURCES Channel.cpp
 	    FATSection.cpp
