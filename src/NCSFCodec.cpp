@@ -234,14 +234,14 @@ int ncsf_loader(void * context, const uint8_t * exe, size_t exe_size,
 static bool Load(NCSFContext* r)
 {
   if (psf_load(r->file.c_str(), &psf_file_system, 0x25,
-               0, 0, psf_info_meta, r, 0) <= 0)
+               nullptr, nullptr, psf_info_meta, r, 0, nullptr, nullptr) <= 0)
   {
     delete r;
     return false;
   }
 
   if (psf_load(r->file.c_str(), &psf_file_system, 0x25,
-               ncsf_loader, &r->sseq, 0, 0, 0) < 0)
+               ncsf_loader, &r->sseq, nullptr, nullptr, 0, nullptr, nullptr) < 0)
   {
     delete r;
     return false;
@@ -340,7 +340,7 @@ public:
                        std::string& artist, int& length) override
   {
     NCSFContext result;
-    if (psf_load(file.c_str(), &psf_file_system, 0x25, 0, 0, psf_info_meta, &result, 0) <= 0)
+    if (psf_load(file.c_str(), &psf_file_system, 0x25, nullptr, nullptr, psf_info_meta, &result, 0, nullptr, nullptr) <= 0)
       return false;
 
     const char* rslash = strrchr(file.c_str(),'/');
