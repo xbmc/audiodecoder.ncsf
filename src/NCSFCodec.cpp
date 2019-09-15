@@ -93,14 +93,20 @@ struct NCSFContext
 {
   ncsf_loader_state sseq;
   Player player;
-  int64_t length;
   int sample_rate;
   int64_t pos;
-  int year;
   std::string file;
   CRingBuffer sample_buffer;
+
+  int year = 0;
+  int64_t length = 0;
+  std::string artist;
   std::string title;
-  std::string album;
+  std::string game;
+  std::string copyright;
+  std::string comment;
+  std::string disc;
+  std::string track;
 };
 
 
@@ -184,10 +190,22 @@ static int psf_info_meta(void * context, const char * name, const char * value)
 {
   NCSFContext* ncsf = (NCSFContext*)context;
 
-  if (!strcasecmp(name, "game"))
-    ncsf->album = value;
+  if (!strcasecmp(name, "artist"))
+    ncsf->artist = value;
+  else if (!strcasecmp(name, "title"))
+    ncsf->title = value;
+  else if (!strcasecmp(name, "game"))
+    ncsf->game = value;
+  else if (!strcasecmp(name, "copyright"))
+    ncsf->copyright = value;
+  else if (!strcasecmp(name, "comment"))
+    ncsf->comment = value;
   else if (!strcasecmp(name, "year"))
     ncsf->year = atoi(value);
+  else if (!strcasecmp(name, "disc"))
+    ncsf->disc = value;
+  else if (!strcasecmp(name, "track"))
+    ncsf->track = value;
   else if (!strcasecmp(name, "length"))
   {
     int temp = parse_time_crap(value);
@@ -340,11 +358,22 @@ public:
     if (psf_load(file.c_str(), &psf_file_system, 0x25, nullptr, nullptr, psf_info_meta, &result, 0, nullptr, nullptr) <= 0)
       return false;
 
-    const char* rslash = strrchr(file.c_str(),'/');
-    if (!rslash)
-      rslash = strrchr(file.c_str(),'\\');
-    title = rslash+1;
-    artist = result.album;
+    // TODO: Change ReadTag in Kodi to give also other parts.
+    if (result.title.empty())
+    {
+      std::string fileName = kodi::vfs::GetFileName(file);
+      size_t lastindex = fileName.find_last_of(".");
+      title = fileName.substr(0, lastindex);
+    }
+    else
+    {
+      if (!result.track.empty() && !result.disc.empty())
+        title = result.disc + "." + result.track + " - " + result.title;
+      else if (!result.track.empty())
+        title = result.track + " - " + result.title;
+    }
+
+    artist = result.game;
     length = result.length/1000;
     return true;
   }
