@@ -4,26 +4,20 @@ project(audiodecoder.ncsf)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
 
 find_package(Kodi REQUIRED)
-find_package(p8-platform REQUIRED)
 find_package(ZLIB REQUIRED)
 
 include_directories(${KODI_INCLUDE_DIR}/..
-                    ${p8-platform_INCLUDE_DIRS}
-                    ${PROJECT_SOURCE_DIR}/lib/psflib
-                    ${PROJECT_SOURCE_DIR}/lib/SSEQPlayer)
+                    ${PROJECT_SOURCE_DIR}/lib)
 
 add_subdirectory(lib/psflib)
 add_subdirectory(lib/SSEQPlayer)
 
-set(NCSF_SOURCES src/NCSFCodec.cpp
-                 src/RingBuffer.cpp)
+set(NCSF_SOURCES src/NCSFCodec.cpp)
 
-set(NCSF_HEADERS src/RingBuffer.h)
+set(NCSF_HEADERS src/NCSFCodec.h
+                 src/CircularBuffer.h)
 
-set(DEPLIBS ${p8-platform_LIBRARIES} psflib SSEQPlayer ${ZLIB_LIBRARIES})
-
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED 1)
+set(DEPLIBS psflib SSEQPlayer ${ZLIB_LIBRARIES})
 
 build_addon(audiodecoder.ncsf NCSF DEPLIBS)
 

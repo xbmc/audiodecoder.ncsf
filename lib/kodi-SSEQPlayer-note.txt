@@ -1,0 +1,2 @@
+SSEQPlayer source from https://github.com/kode54/SSEQPlayer
+Sync to 91436e7 (15 Jul 2015)
