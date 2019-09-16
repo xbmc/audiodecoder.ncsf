@@ -168,10 +168,14 @@ bool CNCSFCodec::Init(const std::string& filename, unsigned int filecache,
   m_tagSongMs = ctx.tagSongMs;
   m_tagFadeMs = ctx.tagFadeMs;
 
+  kodi::CheckSettingBoolean("suppressopeningsilence", m_cfgSuppressOpeningSilence);
+  kodi::CheckSettingBoolean("suppressendsilence", m_cfgSuppressEndSilence);
+  kodi::CheckSettingInt("endsilenceseconds", m_cfgEndSilenceSeconds);
+
   if (!m_tagSongMs)
   {
-    m_tagSongMs = m_cfgDefaultLength;
-    m_tagFadeMs = m_cfgDefaultFade;
+    m_tagSongMs = kodi::GetSettingInt("defaultlength") * 1000;
+    m_tagFadeMs = kodi::GetSettingInt("defaultfade");
   }
 
   if (!Load())
