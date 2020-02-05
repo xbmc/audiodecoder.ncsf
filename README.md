@@ -3,7 +3,8 @@
 This is a [Kodi](https://kodi.tv) audio decoder addon for NCSF files.
 
 [![Build Status](https://travis-ci.org/xbmc/audiodecoder.ncsf.svg?branch=Matrix)](https://travis-ci.org/xbmc/audiodecoder.ncsf/branches)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/xbmc/audiodecoder.ncsf?branch=Matrix&svg=true)](https://ci.appveyor.com/project/xbmc/audiodecoder-ncsf?branch=Matrix)
+[![Build Status](https://dev.azure.com/teamkodi/binary-addons/_apis/build/status/xbmc.audiodecoder.ncsf?branchName=Matrix)](https://dev.azure.com/teamkodi/binary-addons/_build/latest?definitionId=8&branchName=Matrix)
+<!--- [![Build Status](https://ci.appveyor.com/api/projects/status/github/xbmc/audiodecoder.ncsf?branch=Matrix&svg=true)](https://ci.appveyor.com/project/xbmc/audiodecoder-ncsf?branch=Matrix) -->
 
 ## Build instructions
 
