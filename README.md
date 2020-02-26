@@ -2,14 +2,14 @@
 
 This is a [Kodi](http://kodi.tv) audio decoder addon for NCSF files.
 
-[![Build Status](https://travis-ci.org/xbmc/audiodecoder.ncsf.svg?branch=master)](https://travis-ci.org/xbmc/audiodecoder.ncsf)
+[![Build Status](https://travis-ci.org/xbmc/audiodecoder.ncsf.svg?branch=Leia)](https://travis-ci.org/xbmc/audiodecoder.ncsf/branches)
 [![Build Status](https://dev.azure.com/teamkodi/binary-addons/_apis/build/status/xbmc.audiodecoder.ncsf?branchName=Leia)](https://dev.azure.com/teamkodi/binary-addons/_build/latest?definitionId=8&branchName=Leia)
 <!--- [![Build Status](https://ci.appveyor.com/api/projects/status/github/xbmc/audiodecoder.ncsf?svg=true)](https://ci.appveyor.com/project/xbmc/audiodecoder-ncsf) -->
 
 ## Build instructions
 
-When building the addon you have to use the correct branch depending on which version of Kodi you're building against. 
-For example, if you're building the `master` branch of Kodi you should checkout the `master` branch of this repository. 
+When building the addon you have to use the correct branch depending on which version of Kodi you're building against.
+If you want to build the addon to be compatible with the latest kodi `master` commit, you need to checkout the branch with the current kodi codename.
 Also make sure you follow this README from the branch in question.
 
 ### Linux

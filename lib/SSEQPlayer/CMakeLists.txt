@@ -15,8 +15,12 @@ set(SOURCES Channel.cpp
 	    SYMBSection.cpp
 	    Track.cpp)
 
+include(CheckIncludeFileCXX)
 
-add_definitions(-D_LIBCPP_VERSION)
+CHECK_INCLUDE_FILE_CXX(codecvt HAVE_CODECVT)
+if(HAVE_CODECVT)
+  add_definitions(-D_LIBCPP_VERSION)
+endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE 1)
 set(CMAKE_CXX_STANDARD 11)
