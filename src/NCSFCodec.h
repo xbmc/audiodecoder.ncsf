@@ -42,8 +42,8 @@ struct NCSFContext
 class ATTRIBUTE_HIDDEN CNCSFCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
-  CNCSFCodec(KODI_HANDLE instance) :
-    CInstanceAudioDecoder(instance) {}
+  CNCSFCodec(KODI_HANDLE instance, const std::string& version) :
+    CInstanceAudioDecoder(instance, version) {}
   ~CNCSFCodec() override = default;
 
   bool Init(const std::string& filename, unsigned int filecache,
