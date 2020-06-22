@@ -14,6 +14,7 @@
 #include <vector>
 #include <cstring>
 #include <cstdint>
+#include <stdexcept>
 
 /*
  * Pseudo-file data structure
