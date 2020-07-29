@@ -137,8 +137,8 @@ static unsigned long parse_time_crap(const char* input)
 bool CNCSFCodec::Init(const std::string& filename, unsigned int filecache,
                      int& channels, int& samplerate,
                      int& bitspersample, int64_t& totaltime,
-                     int& bitrate, AEDataFormat& format,
-                     std::vector<AEChannel>& channellist)
+                     int& bitrate, AudioEngineDataFormat& format,
+                     std::vector<AudioEngineChannel>& channellist)
 {
   m_file = filename;
 
@@ -171,8 +171,8 @@ bool CNCSFCodec::Init(const std::string& filename, unsigned int filecache,
 
   totaltime = m_tagSongMs;
 
-  format = AE_FMT_S16NE;
-  channellist = { AE_CH_FL, AE_CH_FR };
+  format = AUDIOENGINE_FMT_S16NE;
+  channellist = { AUDIOENGINE_CH_FL, AUDIOENGINE_CH_FR };
   channels = 2;
   bitspersample = 16;
   bitrate = 0.0;
@@ -417,39 +417,38 @@ int64_t CNCSFCodec::Seek(int64_t time)
   return time;
 }
 
-bool CNCSFCodec::ReadTag(const std::string& file, std::string& title,
-                         std::string& artist, int& length)
+bool CNCSFCodec::ReadTag(const std::string& filename, kodi::addon::AudioDecoderInfoTag& tag)
 {
   NCSFContext result;
-  int ret = psf_load(file.c_str(), &psf_file_system, 0x25,
+  int ret = psf_load(filename.c_str(), &psf_file_system, 0x25,
                      nullptr, nullptr,
                      NCFSInfoMeta, &result, 0,
                      NCFSPrintMessage, this);
   if (ret <= 0)
   {
-    kodi::Log(ADDON_LOG_ERROR, "%s: Not an NCSF file (%s)", __func__, file.c_str());
+    kodi::Log(ADDON_LOG_ERROR, "%s: Not an NCSF file (%s)", __func__, filename.c_str());
     return false;
   }
 
   // TODO: Change ReadTag in Kodi to give also other parts.
   if (result.title.empty())
   {
-    std::string fileName = kodi::vfs::GetFileName(file);
+    std::string fileName = kodi::vfs::GetFileName(filename);
     size_t lastindex = fileName.find_last_of(".");
-    title = fileName.substr(0, lastindex);
+    tag.SetTitle(fileName.substr(0, lastindex));
   }
   else
   {
     if (!result.track.empty() && !result.disc.empty())
-      title = result.disc + "." + result.track + " - " + result.title;
+      tag.SetTitle(result.disc + "." + result.track + " - " + result.title);
     else if (!result.track.empty())
-      title = result.track + " - " + result.title;
+      tag.SetTitle(result.track + " - " + result.title);
     else
-      title = result.title;
+      tag.SetTitle(result.title);
   }
 
-  artist = result.game;
-  length = result.tagSongMs/1000;
+  tag.SetArtist(result.game);
+  tag.SetDuration(result.tagSongMs/1000);
   return true;
 }
 
