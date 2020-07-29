@@ -8,7 +8,6 @@
 #pragma once
 
 #include "CircularBuffer.h"
-
 #include "SSEQPlayer/Player.h"
 #include "SSEQPlayer/SDAT.h"
 
@@ -42,14 +41,20 @@ struct NCSFContext
 class ATTRIBUTE_HIDDEN CNCSFCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
-  CNCSFCodec(KODI_HANDLE instance, const std::string& version) :
-    CInstanceAudioDecoder(instance, version) {}
+  CNCSFCodec(KODI_HANDLE instance, const std::string& version)
+    : CInstanceAudioDecoder(instance, version)
+  {
+  }
   ~CNCSFCodec() override = default;
 
-  bool Init(const std::string& filename, unsigned int filecache,
-            int& channels, int& samplerate,
-            int& bitspersample, int64_t& totaltime,
-            int& bitrate, AudioEngineDataFormat& format,
+  bool Init(const std::string& filename,
+            unsigned int filecache,
+            int& channels,
+            int& samplerate,
+            int& bitspersample,
+            int64_t& totaltime,
+            int& bitrate,
+            AudioEngineDataFormat& format,
             std::vector<AudioEngineChannel>& channellist) override;
   int ReadPCM(uint8_t* buffer, int size, int& actualsize) override;
   int64_t Seek(int64_t time) override;
@@ -57,8 +62,11 @@ public:
 
 private:
   static void NCFSPrintMessage(void* context, const char* message);
-  static int NCSFLoader(void * context, const uint8_t * exe, size_t exe_size,
-                        const uint8_t * reserved, size_t reserved_size);
+  static int NCSFLoader(void* context,
+                        const uint8_t* exe,
+                        size_t exe_size,
+                        const uint8_t* reserved,
+                        size_t reserved_size);
   static int NCFSInfoMeta(void* context, const char* name, const char* value);
 
   bool Load();
@@ -70,7 +78,7 @@ private:
 
   inline void calcfade()
   {
-    m_songLength = mul_div(m_tagSongMs-m_posDelta, m_cfgDefaultSampleRate, 1000);
+    m_songLength = mul_div(m_tagSongMs - m_posDelta, m_cfgDefaultSampleRate, 1000);
     m_fadeLength = mul_div(m_tagFadeMs, m_cfgDefaultSampleRate, 1000);
   }
 
@@ -79,7 +87,7 @@ private:
     long long ret = number;
     ret *= numerator;
     ret /= denominator;
-    return (int) ret;
+    return (int)ret;
   }
 
   int m_cfgDefaultSampleRate = 48000;
