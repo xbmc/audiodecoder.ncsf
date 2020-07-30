@@ -25,17 +25,17 @@ struct NCSFLoaderState
 
 struct NCSFContext
 {
-  int year = 0;
   int tagSongMs = 0;
   int tagFadeMs = 0;
 
+  std::string year;
   std::string artist;
   std::string title;
   std::string game;
   std::string copyright;
   std::string comment;
-  std::string disc;
-  std::string track;
+  int disc;
+  int track;
 };
 
 class ATTRIBUTE_HIDDEN CNCSFCodec : public kodi::addon::CInstanceAudioDecoder

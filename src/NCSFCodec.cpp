@@ -429,7 +429,6 @@ bool CNCSFCodec::ReadTag(const std::string& filename, kodi::addon::AudioDecoderI
     return false;
   }
 
-  // TODO: Change ReadTag in Kodi to give also other parts.
   if (result.title.empty())
   {
     std::string fileName = kodi::vfs::GetFileName(filename);
@@ -438,15 +437,20 @@ bool CNCSFCodec::ReadTag(const std::string& filename, kodi::addon::AudioDecoderI
   }
   else
   {
-    if (!result.track.empty() && !result.disc.empty())
-      tag.SetTitle(result.disc + "." + result.track + " - " + result.title);
-    else if (!result.track.empty())
-      tag.SetTitle(result.track + " - " + result.title);
-    else
-      tag.SetTitle(result.title);
+    tag.SetTitle(result.title);
   }
 
-  tag.SetArtist(result.game);
+  if (!result.artist.empty())
+    tag.SetArtist(result.artist);
+  else
+    tag.SetArtist(result.game);
+  tag.SetAlbum(result.game);
+  tag.SetReleaseDate(result.year);
+  tag.SetComment(result.comment);
+  tag.SetDisc(result.disc);
+  tag.SetTrack(result.track);
+  tag.SetSamplerate(m_cfgDefaultSampleRate);
+  tag.SetChannels(2);
   tag.SetDuration(result.tagSongMs / 1000);
   return true;
 }
@@ -500,11 +504,11 @@ int CNCSFCodec::NCFSInfoMeta(void* context, const char* name, const char* value)
   else if (!strcasecmp(name, "comment"))
     ncsf->comment = value;
   else if (!strcasecmp(name, "year"))
-    ncsf->year = atoi(value);
+    ncsf->year = value;
   else if (!strcasecmp(name, "disc"))
-    ncsf->disc = value;
+    ncsf->disc = atoi(value);
   else if (!strcasecmp(name, "track"))
-    ncsf->track = value;
+    ncsf->track = atoi(value);
   else if (!strcasecmp(name, "length"))
   {
     int temp = parse_time_crap(value);
