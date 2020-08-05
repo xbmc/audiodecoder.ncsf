@@ -8,7 +8,6 @@
 #pragma once
 
 #include "CircularBuffer.h"
-
 #include "SSEQPlayer/Player.h"
 #include "SSEQPlayer/SDAT.h"
 
@@ -26,40 +25,48 @@ struct NCSFLoaderState
 
 struct NCSFContext
 {
-  int year = 0;
   int tagSongMs = 0;
   int tagFadeMs = 0;
 
+  std::string year;
   std::string artist;
   std::string title;
   std::string game;
   std::string copyright;
   std::string comment;
-  std::string disc;
-  std::string track;
+  int disc;
+  int track;
 };
 
 class ATTRIBUTE_HIDDEN CNCSFCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
-  CNCSFCodec(KODI_HANDLE instance, const std::string& version) :
-    CInstanceAudioDecoder(instance, version) {}
+  CNCSFCodec(KODI_HANDLE instance, const std::string& version)
+    : CInstanceAudioDecoder(instance, version)
+  {
+  }
   ~CNCSFCodec() override = default;
 
-  bool Init(const std::string& filename, unsigned int filecache,
-            int& channels, int& samplerate,
-            int& bitspersample, int64_t& totaltime,
-            int& bitrate, AEDataFormat& format,
-            std::vector<AEChannel>& channellist) override;
+  bool Init(const std::string& filename,
+            unsigned int filecache,
+            int& channels,
+            int& samplerate,
+            int& bitspersample,
+            int64_t& totaltime,
+            int& bitrate,
+            AudioEngineDataFormat& format,
+            std::vector<AudioEngineChannel>& channellist) override;
   int ReadPCM(uint8_t* buffer, int size, int& actualsize) override;
   int64_t Seek(int64_t time) override;
-  bool ReadTag(const std::string& file, std::string& title,
-               std::string& artist, int& length) override;
+  bool ReadTag(const std::string& filename, kodi::addon::AudioDecoderInfoTag& tag) override;
 
 private:
   static void NCFSPrintMessage(void* context, const char* message);
-  static int NCSFLoader(void * context, const uint8_t * exe, size_t exe_size,
-                        const uint8_t * reserved, size_t reserved_size);
+  static int NCSFLoader(void* context,
+                        const uint8_t* exe,
+                        size_t exe_size,
+                        const uint8_t* reserved,
+                        size_t reserved_size);
   static int NCFSInfoMeta(void* context, const char* name, const char* value);
 
   bool Load();
@@ -71,7 +78,7 @@ private:
 
   inline void calcfade()
   {
-    m_songLength = mul_div(m_tagSongMs-m_posDelta, m_cfgDefaultSampleRate, 1000);
+    m_songLength = mul_div(m_tagSongMs - m_posDelta, m_cfgDefaultSampleRate, 1000);
     m_fadeLength = mul_div(m_tagFadeMs, m_cfgDefaultSampleRate, 1000);
   }
 
@@ -80,7 +87,7 @@ private:
     long long ret = number;
     ret *= numerator;
     ret /= denominator;
-    return (int) ret;
+    return (int)ret;
   }
 
   int m_cfgDefaultSampleRate = 48000;

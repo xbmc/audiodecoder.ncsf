@@ -12,9 +12,8 @@
 #include "common.h"
 
 #if (defined(__GNUC__) || defined(__clang__)) && !defined(_LIBCPP_VERSION)
-
-//std::locale::id std::codecvt<char16_t, char, mbstate_t>::id;
-//std::locale::id std::codecvt<char32_t, char, mbstate_t>::id;
+std::locale::id std::codecvt<char16_t, char, mbstate_t>::id;
+std::locale::id std::codecvt<char32_t, char, mbstate_t>::id;
 #endif
 
 Player::Player() : prio(0), nTracks(0), tempo(0), tempoCount(0), tempoRate(0), masterVol(0), sseqVol(0), sseq(nullptr), sampleRate(0), interpolation(INTERPOLATION_NONE)

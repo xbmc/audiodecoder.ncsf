@@ -8,71 +8,64 @@
 
 #include "NCSFCodec.h"
 
-#include <kodi/Filesystem.h>
-
 #include <algorithm>
 #include <iostream>
+#include <kodi/Filesystem.h>
 
 extern "C"
 {
-#include <stdio.h>
-#include <stdint.h>
 #include "psflib/psflib.h"
 
-static void* psf_file_fopen(const char* uri)
-{
-  kodi::vfs::CFile* file = new kodi::vfs::CFile;
-  if (!file->OpenFile(uri, 0))
+#include <stdint.h>
+#include <stdio.h>
+
+  static void* psf_file_fopen(void* context, const char* uri)
   {
-    delete file;
-    return nullptr;
+    kodi::vfs::CFile* file = new kodi::vfs::CFile;
+    if (!file->OpenFile(uri, 0))
+    {
+      delete file;
+      return nullptr;
+    }
+
+    return file;
   }
 
-  return file;
-}
+  static size_t psf_file_fread(void* buffer, size_t size, size_t count, void* handle)
+  {
+    kodi::vfs::CFile* file = static_cast<kodi::vfs::CFile*>(handle);
+    return file->Read(buffer, size * count);
+  }
 
-static size_t psf_file_fread(void* buffer, size_t size, size_t count, void* handle)
-{
-  kodi::vfs::CFile* file = static_cast<kodi::vfs::CFile*>(handle);
-  return file->Read(buffer, size*count);
-}
+  static int psf_file_fseek(void* handle, int64_t offset, int whence)
+  {
+    kodi::vfs::CFile* file = static_cast<kodi::vfs::CFile*>(handle);
+    return file->Seek(offset, whence) > -1 ? 0 : -1;
+  }
 
-static int psf_file_fseek(void* handle, int64_t offset, int whence)
-{
-  kodi::vfs::CFile* file = static_cast<kodi::vfs::CFile*>(handle);
-  return file->Seek(offset, whence) > -1 ? 0 : -1;
-}
+  static int psf_file_fclose(void* handle)
+  {
+    delete static_cast<kodi::vfs::CFile*>(handle);
 
-static int psf_file_fclose(void* handle)
-{
-  delete static_cast<kodi::vfs::CFile*>(handle);
+    return 0;
+  }
 
-  return 0;
-}
+  static long psf_file_ftell(void* handle)
+  {
+    kodi::vfs::CFile* file = static_cast<kodi::vfs::CFile*>(handle);
+    return file->GetPosition();
+  }
 
-static long psf_file_ftell(void* handle)
-{
-  kodi::vfs::CFile* file = static_cast<kodi::vfs::CFile*>(handle);
-  return file->GetPosition();
-}
+  const psf_file_callbacks psf_file_system = {"\\/",          nullptr,        psf_file_fopen,
+                                              psf_file_fread, psf_file_fseek, psf_file_fclose,
+                                              psf_file_ftell};
 
-const psf_file_callbacks psf_file_system =
-{
-  "\\/",
-  psf_file_fopen,
-  psf_file_fread,
-  psf_file_fseek,
-  psf_file_fclose,
-  psf_file_ftell
-};
-
-inline unsigned get_le32(void const* p)
-{
-    return  (unsigned) ((unsigned char const*) p) [3] << 24 |
-            (unsigned) ((unsigned char const*) p) [2] << 16 |
-            (unsigned) ((unsigned char const*) p) [1] <<  8 |
-            (unsigned) ((unsigned char const*) p) [0];
-}
+  inline unsigned get_le32(void const* p)
+  {
+    return (unsigned)((unsigned char const*)p)[3] << 24 |
+           (unsigned)((unsigned char const*)p)[2] << 16 |
+           (unsigned)((unsigned char const*)p)[1] << 8 | (unsigned)((unsigned char const*)p)[0];
+  }
 
 } // extern "C"
 
@@ -106,7 +99,8 @@ static unsigned long parse_time_crap(const char* input)
   for (;;)
   {
     char* end;
-    if (ptr != input) ++ptr;
+    if (ptr != input)
+      ++ptr;
     if (multiplier == 1000)
     {
       double temp = std::stod(ptr);
@@ -134,19 +128,21 @@ static unsigned long parse_time_crap(const char* input)
 
 //------------------------------------------------------------------------------
 
-bool CNCSFCodec::Init(const std::string& filename, unsigned int filecache,
-                     int& channels, int& samplerate,
-                     int& bitspersample, int64_t& totaltime,
-                     int& bitrate, AEDataFormat& format,
-                     std::vector<AEChannel>& channellist)
+bool CNCSFCodec::Init(const std::string& filename,
+                      unsigned int filecache,
+                      int& channels,
+                      int& samplerate,
+                      int& bitspersample,
+                      int64_t& totaltime,
+                      int& bitrate,
+                      AudioEngineDataFormat& format,
+                      std::vector<AudioEngineChannel>& channellist)
 {
   m_file = filename;
 
   NCSFContext ctx;
-  int ret = psf_load(m_file.c_str(), &psf_file_system, 0x25,
-                     nullptr, nullptr,
-                     NCFSInfoMeta, &ctx, 0,
-                     NCFSPrintMessage, this);
+  int ret = psf_load(m_file.c_str(), &psf_file_system, 0x25, nullptr, nullptr, NCFSInfoMeta, &ctx,
+                     0, NCFSPrintMessage, this);
   if (ret <= 0)
   {
     kodi::Log(ADDON_LOG_ERROR, "%s: Not an NCSF file (%s)", __func__, m_file.c_str());
@@ -171,8 +167,8 @@ bool CNCSFCodec::Init(const std::string& filename, unsigned int filecache,
 
   totaltime = m_tagSongMs;
 
-  format = AE_FMT_S16NE;
-  channellist = { AE_CH_FL, AE_CH_FR };
+  format = AUDIOENGINE_FMT_S16NE;
+  channellist = {AUDIOENGINE_CH_FL, AUDIOENGINE_CH_FR};
   channels = 2;
   bitspersample = 16;
   bitrate = 0.0;
@@ -185,10 +181,8 @@ bool CNCSFCodec::Load()
 {
   if (m_sseq.sdatData.empty())
   {
-    int ret = psf_load(m_file.c_str(), &psf_file_system, 0x25,
-                       NCSFLoader, &m_sseq,
-                       nullptr, nullptr, 0,
-                       NCFSPrintMessage, this);
+    int ret = psf_load(m_file.c_str(), &psf_file_system, 0x25, NCSFLoader, &m_sseq, nullptr,
+                       nullptr, 0, NCFSPrintMessage, this);
     if (ret <= 0)
     {
       kodi::Log(ADDON_LOG_ERROR, "%s: Not an NCSF file (%s)", __func__, m_file.c_str());
@@ -274,7 +268,8 @@ int CNCSFCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
   if (m_eof && !m_silenceTestBuffer.data_available())
     return -1;
 
-  if (m_tagSongMs && (m_posDelta + mul_div(m_dataWritten, 1000, m_player.sampleRate)) >= m_tagSongMs + m_tagFadeMs)
+  if (m_tagSongMs &&
+      (m_posDelta + mul_div(m_dataWritten, 1000, m_player.sampleRate)) >= m_tagSongMs + m_tagFadeMs)
     return 1;
 
   if (size > m_sampleBuffer.size())
@@ -308,11 +303,14 @@ int CNCSFCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
             samples_to_render = usedSize;
           m_player.GenerateSamples(m_sampleBuffer, 0, samples_to_render);
         }
-        m_silenceTestBuffer.write(reinterpret_cast<int16_t*>(m_sampleBuffer.data()), samples_to_render * 2);
+        m_silenceTestBuffer.write(reinterpret_cast<int16_t*>(m_sampleBuffer.data()),
+                                  samples_to_render * 2);
         free_space -= samples_to_render;
         if (m_remainder)
         {
-          memmove(m_sampleBuffer.data(), reinterpret_cast<int16_t*>(m_sampleBuffer.data()) + samples_to_render * 2, m_remainder * 4);
+          memmove(m_sampleBuffer.data(),
+                  reinterpret_cast<int16_t*>(m_sampleBuffer.data()) + samples_to_render * 2,
+                  m_remainder * 4);
         }
       }
     }
@@ -382,7 +380,8 @@ int64_t CNCSFCodec::Seek(int64_t time)
   double p_seconds = double(time) / 1000.0;
   m_eof = false;
 
-  double buffered_time = (double)(m_silenceTestBuffer.data_available() / 2) / m_cfgDefaultSampleRate;
+  double buffered_time =
+      (double)(m_silenceTestBuffer.data_available() / 2) / m_cfgDefaultSampleRate;
 
   m_pos += buffered_time;
 
@@ -401,7 +400,9 @@ int64_t CNCSFCodec::Seek(int64_t time)
     m_player.GenerateSamples(m_sampleBuffer, 0, samples);
     if (samples > howmany)
     {
-      memmove(m_sampleBuffer.data(), reinterpret_cast<int16_t*>(m_sampleBuffer.data()) + howmany * 2, (samples - howmany) * 4);
+      memmove(m_sampleBuffer.data(),
+              reinterpret_cast<int16_t*>(m_sampleBuffer.data()) + howmany * 2,
+              (samples - howmany) * 4);
       m_remainder = samples - howmany;
       samples = howmany;
     }
@@ -417,39 +418,40 @@ int64_t CNCSFCodec::Seek(int64_t time)
   return time;
 }
 
-bool CNCSFCodec::ReadTag(const std::string& file, std::string& title,
-                         std::string& artist, int& length)
+bool CNCSFCodec::ReadTag(const std::string& filename, kodi::addon::AudioDecoderInfoTag& tag)
 {
   NCSFContext result;
-  int ret = psf_load(file.c_str(), &psf_file_system, 0x25,
-                     nullptr, nullptr,
-                     NCFSInfoMeta, &result, 0,
-                     NCFSPrintMessage, this);
+  int ret = psf_load(filename.c_str(), &psf_file_system, 0x25, nullptr, nullptr, NCFSInfoMeta,
+                     &result, 0, NCFSPrintMessage, this);
   if (ret <= 0)
   {
-    kodi::Log(ADDON_LOG_ERROR, "%s: Not an NCSF file (%s)", __func__, file.c_str());
+    kodi::Log(ADDON_LOG_ERROR, "%s: Not an NCSF file (%s)", __func__, filename.c_str());
     return false;
   }
 
-  // TODO: Change ReadTag in Kodi to give also other parts.
   if (result.title.empty())
   {
-    std::string fileName = kodi::vfs::GetFileName(file);
+    std::string fileName = kodi::vfs::GetFileName(filename);
     size_t lastindex = fileName.find_last_of(".");
-    title = fileName.substr(0, lastindex);
+    tag.SetTitle(fileName.substr(0, lastindex));
   }
   else
   {
-    if (!result.track.empty() && !result.disc.empty())
-      title = result.disc + "." + result.track + " - " + result.title;
-    else if (!result.track.empty())
-      title = result.track + " - " + result.title;
-    else
-      title = result.title;
+    tag.SetTitle(result.title);
   }
 
-  artist = result.game;
-  length = result.tagSongMs/1000;
+  if (!result.artist.empty())
+    tag.SetArtist(result.artist);
+  else
+    tag.SetArtist(result.game);
+  tag.SetAlbum(result.game);
+  tag.SetReleaseDate(result.year);
+  tag.SetComment(result.comment);
+  tag.SetDisc(result.disc);
+  tag.SetTrack(result.track);
+  tag.SetSamplerate(m_cfgDefaultSampleRate);
+  tag.SetChannels(2);
+  tag.SetDuration(result.tagSongMs / 1000);
   return true;
 }
 
@@ -458,8 +460,11 @@ void CNCSFCodec::NCFSPrintMessage(void* context, const char* message)
   kodi::Log(ADDON_LOG_DEBUG, "NCFS codec message: '%s'", message);
 }
 
-int CNCSFCodec::NCSFLoader(void* context, const uint8_t* exe, size_t exe_size,
-                           const uint8_t* reserved, size_t reserved_size)
+int CNCSFCodec::NCSFLoader(void* context,
+                           const uint8_t* exe,
+                           size_t exe_size,
+                           const uint8_t* reserved,
+                           size_t reserved_size)
 {
   NCSFLoaderState* state = static_cast<NCSFLoaderState*>(context);
 
@@ -499,11 +504,11 @@ int CNCSFCodec::NCFSInfoMeta(void* context, const char* name, const char* value)
   else if (!strcasecmp(name, "comment"))
     ncsf->comment = value;
   else if (!strcasecmp(name, "year"))
-    ncsf->year = atoi(value);
+    ncsf->year = value;
   else if (!strcasecmp(name, "disc"))
-    ncsf->disc = value;
+    ncsf->disc = atoi(value);
   else if (!strcasecmp(name, "track"))
-    ncsf->track = value;
+    ncsf->track = atoi(value);
   else if (!strcasecmp(name, "length"))
   {
     int temp = parse_time_crap(value);
@@ -526,7 +531,11 @@ class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
-  ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, const std::string& version, KODI_HANDLE& addonInstance) override
+  ADDON_STATUS CreateInstance(int instanceType,
+                              const std::string& instanceID,
+                              KODI_HANDLE instance,
+                              const std::string& version,
+                              KODI_HANDLE& addonInstance) override
   {
     addonInstance = new CNCSFCodec(instance, version);
     return ADDON_STATUS_OK;
