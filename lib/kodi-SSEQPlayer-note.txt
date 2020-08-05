@@ -1,2 +1,4 @@
-SSEQPlayer source from https://github.com/kode54/SSEQPlayer
-Sync to 91436e7 (15 Jul 2015)
+SSEQPlayer source from https://g.losno.co/chris/SSEQPlayer
+Sync to 1778b651ed (5 Aug 2020)
+
+Old source https://github.com/kode54/SSEQPlayer
