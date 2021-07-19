@@ -12,15 +12,15 @@
     tags="true"
     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">NCSF (Nitro Composer Sound Format) Audio Decoder</summary>
-    <summary lang="en_GB">NCSF (Nitro Composer Sound Format) Audio Decoder</summary>
-    <description lang="de_DE">Fügt Dekodierungsunterstützung für Nitro Composer Sound Format-Dateien (.NCSF / .MININCSF) hinzu.[CR][CR]Das Nitro Composer Sound Format (NCSF) ist ein PSF-Stil für Nintendo DS-Musik, insbesondere Musik, die über Nitro Composer erstellt wurde, einen Tracker-ähnlichen Komponisten, der Teil des Nitro SDK von Nintendo für den Nintendo DS ist.</description>
-    <description lang="en_GB">Adds decoding support for Nitro Composer Sound Format files (.NCSF/.MININCSF).[CR][CR]Nitro Composer Sound Format (NCSF) is a PSF-style for Nintendo DS music, specifically music that was created via Nitro Composer, a tracker-like composer that is part of Nintendo's Nitro SDK for the Nintendo DS.</description>
     <platform>@PLATFORM@</platform>
     <license>GPL-2.0-or-later</license>
     <source>https://github.com/xbmc/audiodecoder.ncsf</source>
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="de_DE">NCSF (Nitro Composer Sound Format) Audio Decoder</summary>
+    <summary lang="en_GB">NCSF (Nitro Composer Sound Format) Audio Decoder</summary>
+    <description lang="de_DE">Fügt Dekodierungsunterstützung für Nitro Composer Sound Format-Dateien (.NCSF / .MININCSF) hinzu.[CR][CR]Das Nitro Composer Sound Format (NCSF) ist ein PSF-Stil für Nintendo DS-Musik, insbesondere Musik, die über Nitro Composer erstellt wurde, einen Tracker-ähnlichen Komponisten, der Teil des Nitro SDK von Nintendo für den Nintendo DS ist.</description>
+    <description lang="en_GB">Adds decoding support for Nitro Composer Sound Format files (.NCSF/.MININCSF).[CR][CR]Nitro Composer Sound Format (NCSF) is a PSF-style for Nintendo DS music, specifically music that was created via Nitro Composer, a tracker-like composer that is part of Nintendo's Nitro SDK for the Nintendo DS.</description>
   </extension>
 </addon>
