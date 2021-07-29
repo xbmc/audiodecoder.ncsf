@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Addons\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/audiodecoder.ncsf/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-18 21:02+0000\n"
+"PO-Revision-Date: 2021-07-29 19:22+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-add-ons-audio-decodersencoders/audiodecoder-ncsf/da_dk/>\n"
 "Language: da_dk\n"
@@ -15,15 +15,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.7.2\n"
 
 msgctxt "Addon Summary"
 msgid "NCSF (Nitro Composer Sound Format) Audio Decoder"
-msgstr ""
+msgstr "NCSF (Nitro Composer Sound Format) lyddekoder"
 
 msgctxt "Addon Description"
 msgid "Adds decoding support for Nitro Composer Sound Format files (.NCSF/.MININCSF).[CR][CR]Nitro Composer Sound Format (NCSF) is a PSF-style for Nintendo DS music, specifically music that was created via Nitro Composer, a tracker-like composer that is part of Nintendo's Nitro SDK for the Nintendo DS."
-msgstr ""
+msgstr "Tilføjer afkodningsunderstøttelse af Nitro Composer Sound Format-filer (.NCSF / .MININCSF).[CR][CR]Nitro Composer Sound Format (NCSF) er en PSF-stil til Nintendo DS-musik. Det er især musik, der blev skabt via Nitro Composer; en tracker-lignende composer, der er en del af Nintendos Nitro SDK til Nintendo DS."
 
 # [Consistency] Make terms, settings names, brands and other minutiae, consistent throughout file.
 # [Capitalization] Avoid capitalizing every second word. See http://grammarist.com/capitalization/
