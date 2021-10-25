@@ -18,7 +18,7 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
-    <summary lang="da_DK">NCSF (Nitro Composer Sound Format) lyddekoder</summary>
+    <summary lang="da_DK">NCSF (Nitro Composer Sound Format) lydafkoder</summary>
     <summary lang="de_DE">NCSF (Nitro Composer Sound Format) Audio Decoder</summary>
     <summary lang="en_GB">NCSF (Nitro Composer Sound Format) Audio Decoder</summary>
     <summary lang="es_ES">Decodificador de Audio NCSF (Nitro Composer Sound Format)</summary>
