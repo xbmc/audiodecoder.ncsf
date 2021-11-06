@@ -91,3 +91,9 @@ msgstr ""
 msgctxt "#30014"
 msgid "{0:d} s"
 msgstr ""
+
+#. Supported file extension description about ".minincsf"
+#: audiodecoder.ncsf/addon.xml.in
+msgctxt "#30100"
+msgid "File created in the Nitro Composer Sound Format (NCSF)."
+msgstr ""

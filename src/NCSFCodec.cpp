@@ -263,14 +263,14 @@ bool CNCSFCodec::Load()
   return true;
 }
 
-int CNCSFCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
+int CNCSFCodec::ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize)
 {
   if (m_eof && !m_silenceTestBuffer.data_available())
-    return -1;
+    return AUDIODECODER_READ_EOF;
 
   if (m_tagSongMs &&
       (m_posDelta + mul_div(m_dataWritten, 1000, m_player.sampleRate)) >= m_tagSongMs + m_tagFadeMs)
-    return 1;
+    return AUDIODECODER_READ_ERROR;
 
   if (size > m_sampleBuffer.size())
     m_sampleBuffer.resize(size * 2);
@@ -318,7 +318,7 @@ int CNCSFCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
     if (m_silenceTestBuffer.test_silence())
     {
       m_eof = true;
-      return -1;
+      return AUDIODECODER_READ_EOF;
     }
 
     written = m_silenceTestBuffer.data_available() / 2;
@@ -372,7 +372,7 @@ int CNCSFCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
   actualsize = written * 2 * sizeof(int16_t);
   memcpy(buffer, m_sampleBuffer.data(), actualsize);
 
-  return 0;
+  return AUDIODECODER_READ_SUCCESS;
 }
 
 int64_t CNCSFCodec::Seek(int64_t time)
@@ -527,7 +527,7 @@ int CNCSFCodec::NCFSInfoMeta(void* context, const char* name, const char* value)
 
 //------------------------------------------------------------------------------
 
-class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
+class ATTR_DLL_LOCAL CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
