@@ -41,10 +41,7 @@ struct NCSFContext
 class ATTR_DLL_LOCAL CNCSFCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
-  CNCSFCodec(KODI_HANDLE instance, const std::string& version)
-    : CInstanceAudioDecoder(instance, version)
-  {
-  }
+  CNCSFCodec(const kodi::addon::IInstanceInfo& instance) : CInstanceAudioDecoder(instance) {}
   ~CNCSFCodec() override = default;
 
   bool Init(const std::string& filename,
