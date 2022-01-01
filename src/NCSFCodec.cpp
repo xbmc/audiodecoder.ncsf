@@ -152,14 +152,14 @@ bool CNCSFCodec::Init(const std::string& filename,
   m_tagSongMs = ctx.tagSongMs;
   m_tagFadeMs = ctx.tagFadeMs;
 
-  kodi::CheckSettingBoolean("suppressopeningsilence", m_cfgSuppressOpeningSilence);
-  kodi::CheckSettingBoolean("suppressendsilence", m_cfgSuppressEndSilence);
-  kodi::CheckSettingInt("endsilenceseconds", m_cfgEndSilenceSeconds);
+  kodi::addon::CheckSettingBoolean("suppressopeningsilence", m_cfgSuppressOpeningSilence);
+  kodi::addon::CheckSettingBoolean("suppressendsilence", m_cfgSuppressEndSilence);
+  kodi::addon::CheckSettingInt("endsilenceseconds", m_cfgEndSilenceSeconds);
 
   if (!m_tagSongMs)
   {
-    m_tagSongMs = kodi::GetSettingInt("defaultlength") * 1000;
-    m_tagFadeMs = kodi::GetSettingInt("defaultfade");
+    m_tagSongMs = kodi::addon::GetSettingInt("defaultlength") * 1000;
+    m_tagFadeMs = kodi::addon::GetSettingInt("defaultfade");
   }
 
   if (!Load())
@@ -531,13 +531,10 @@ class ATTR_DLL_LOCAL CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
-  ADDON_STATUS CreateInstance(int instanceType,
-                              const std::string& instanceID,
-                              KODI_HANDLE instance,
-                              const std::string& version,
-                              KODI_HANDLE& addonInstance) override
+  ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+                              KODI_ADDON_INSTANCE_HDL& hdl) override
   {
-    addonInstance = new CNCSFCodec(instance, version);
+    hdl = new CNCSFCodec(instance);
     return ADDON_STATUS_OK;
   }
   ~CMyAddon() override = default;
