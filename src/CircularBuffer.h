@@ -16,7 +16,7 @@ template<typename T>
 class circular_buffer
 {
 public:
-  circular_buffer(unsigned p_size) : readptr(0), writeptr(0), size(p_size), used(0)
+  circular_buffer(unsigned p_size) : readptr(0), writeptr(0), used(0), size(p_size)
   {
     buffer.resize(p_size);
   }
